@@ -1,0 +1,54 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.optimize import curve_fit
+
+# Dados das matrículas em EAD (históricos)
+dados = {
+    'Ano': [2014, 2015, 2016, 2017, 2018, 2019],
+    'Rede Privada': [1100, 1200, 1300, 1500, 1700, 2100],
+    'Rede Pública': [100, 90, 85, 80, 75, 70],
+    'Total': [1200, 1290, 1385, 1580, 1775, 2170]
+}
+
+# Criar um DataFrame
+df = pd.DataFrame(dados)
+
+# Função para ajuste exponencial
+def exp_func(x, a, b):
+    return a * np.exp(b * x)
+
+# Ajuste exponencial para cada série de dados
+anos = df['Ano']
+x = anos - anos.min()
+y_total = df['Total']
+
+params_total, _ = curve_fit(exp_func, x, y_total)
+
+# Previsão para anos futuros
+anos_futuros = np.arange(2014, 2031)
+x_futuros = anos_futuros - anos.min()
+y_futuros_total = exp_func(x_futuros, *params_total)
+
+# Plotar os dados históricos e a previsão
+plt.figure(figsize=(10, 6))
+plt.plot(df['Ano'], df['Rede Privada'], 'bo', label='Rede Privada (Histórico)')
+plt.plot(anos_futuros, exp_func(x_futuros, *curve_fit(exp_func, x, df['Rede Privada'])[0]), 'b--', label='Rede Privada (Previsão)')
+plt.plot(df['Ano'], df['Rede Pública'], 'ro', label='Rede Pública (Histórico)')
+plt.plot(anos_futuros, exp_func(x_futuros, *curve_fit(exp_func, x, df['Rede Pública'])[0]), 'r--', label='Rede Pública (Previsão)')
+plt.plot(df['Ano'], df['Total'], 'go', label='Total (Histórico)')
+plt.plot(anos_futuros, y_futuros_total, 'g--', label='Total (Previsão)')
+
+# Adicionar título e labels
+plt.title('Evolução e Previsão do Número de Cursos EAD')
+plt.xlabel('Ano')
+plt.ylabel('Número de Cursos EAD')
+plt.legend()
+
+# Exibir os parâmetros ajustados
+params_text = f'Parâmetros da função exponencial ajustada para o total: a = {params_total[0]:.2f}, b = {params_total[1]:.2f}'
+plt.figtext(0.5, -0.1, params_text, wrap=True, horizontalalignment='center', fontsize=10)
+
+# Exibir o gráfico
+plt.grid(True)
+plt.show()
