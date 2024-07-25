@@ -1,0 +1,29 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Dados das matrículas em EAD
+dados = {
+    'Ano': [2014, 2015, 2016, 2017, 2018, 2019],
+    'Rede Privada': [1100, 1200, 1300, 1500, 1700, 2100],
+    'Rede Pública': [100, 90, 85, 80, 75, 70],
+    'Total': [1200, 1290, 1385, 1580, 1775, 2170]
+}
+
+# Criar um DataFrame
+df = pd.DataFrame(dados)
+
+# Plotar os dados
+plt.figure(figsize=(10, 6))
+plt.plot(df['Ano'], df['Rede Privada'], marker='o', label='Rede Privada')
+plt.plot(df['Ano'], df['Rede Pública'], marker='o', label='Rede Pública')
+plt.plot(df['Ano'], df['Total'], marker='o', label='Total')
+
+# Adicionar título e labels
+plt.title('Evolução das Matrículas em Cursos EAD (2014-2019)')
+plt.xlabel('Ano')
+plt.ylabel('Número de Matrículas (em milhares)')
+plt.legend()
+
+# Exibir o gráfico
+plt.grid(True)
+plt.show()
