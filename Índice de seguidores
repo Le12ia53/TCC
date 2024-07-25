@@ -1,0 +1,29 @@
+import matplotlib.pyplot as plt
+
+# Dados dos seguidores nas redes sociais
+instituicoes = ['Puc PR', 'USP Esalq', 'PUC Minas', 'USP ICM']
+youtube = [101000, 99000, 16000, 15000]
+instagram = [45000, 20000, 11000, 0]
+
+# Configuração para gráficos empilhados
+fig, ax = plt.subplots(figsize=(10, 6))
+
+# Plotar as barras empilhadas
+bars1 = ax.bar(instituicoes, youtube, color='blue', label='YouTube')
+bars2 = ax.bar(instituicoes, instagram, bottom=youtube, color='green', label='Instagram')
+
+# Adicionar labels nas barras
+for bar1, bar2, yt, ig in zip(bars1, bars2, youtube, instagram):
+    yval1 = bar1.get_height()
+    yval2 = bar2.get_height()
+    ax.text(bar1.get_x() + bar1.get_width()/2.0, yval1 - 1500, f'{yt // 1000} Mil', ha='center', va='bottom', color='white', fontsize=9)
+    ax.text(bar2.get_x() + bar2.get_width()/2.0, yval1 + yval2 - 1500, f'{ig // 1000} Mil', ha='center', va='bottom', color='white', fontsize=9)
+
+# Adicionar título e labels
+ax.set_title('Redes Sociais - Índice de Seguidores')
+ax.set_xlabel('Instituição')
+ax.set_ylabel('Número de Seguidores')
+ax.legend()
+
+# Exibir o gráfico
+plt.show()
