@@ -1,0 +1,45 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+from IPython.display import display
+
+# Dados de exemplo baseados nos gráficos anteriores
+data = {
+    'Sentimento': [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4],
+    'Frequência': [1, 2, 13, 89, 552, 2976, 504, 63, 11, 2]
+}
+
+# Criar um DataFrame
+df = pd.DataFrame(data)
+
+# Função para classificar os sentimentos
+def classificar_sentimento(valor):
+    if valor < 0:
+        return 'Negativa'
+    elif valor == 0:
+        return 'Neutra'
+    else:
+        return 'Positiva'
+
+# Aplicar a função de classificação
+df['Classificação'] = df['Sentimento'].apply(classificar_sentimento)
+
+# Gerar a tabela de resumo
+tabela_resumo = df.groupby('Classificação')['Frequência'].sum().reset_index()
+tabela_resumo.columns = ['Polarização', 'Soma']
+
+# Exibir a tabela de resumo
+print("Tabela de Resumo dos Sentimentos")
+display(tabela_resumo)
+
+# Plotar o gráfico de barras empilhadas para visualização
+plt.figure(figsize=(12, 8))
+colors = {'Negativa': 'red', 'Neutra': 'grey', 'Positiva': 'green'}
+
+for polarizacao in tabela_resumo['Polarização']:
+    soma = tabela_resumo[tabela_resumo['Polarização'] == polarizacao]['Soma']
+    plt.bar(polarizacao, soma, color=colors[polarizacao])
+
+plt.title('Polarização dos Sentimentos')
+plt.xlabel('Polarização')
+plt.ylabel('Soma dos Léxicos')
+plt.show()
