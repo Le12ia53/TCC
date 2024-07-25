@@ -1,0 +1,36 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Dados de exemplo para análise de sentimentos
+data = {
+    'USP Esalq': np.random.uniform(-1, 1, 50),
+    'PUC PR': np.random.uniform(-1, 1, 50),
+    'PUC Minas': np.random.uniform(-1, 1, 50),
+    'USP ICM': np.random.uniform(-1, 1, 50)
+}
+
+# Criar um DataFrame
+df = pd.DataFrame(data)
+
+# Definir as cores para cada instituição
+colors = {
+    'USP Esalq': 'skyblue',
+    'PUC PR': 'orange',
+    'PUC Minas': 'lightgreen',
+    'USP ICM': 'salmon'
+}
+
+# Plotar histogramas sobrepostos com opacidade ajustada
+plt.figure(figsize=(12, 8))
+for coluna in df.columns:
+    plt.hist(df[coluna], bins=20, alpha=0.6, edgecolor='black', linewidth=1.2, label=coluna, color=colors[coluna])
+
+# Adicionar título e labels
+plt.title('Análise de Sentimentos - YouTube')
+plt.xlabel('Sentimento')
+plt.ylabel('Frequência')
+plt.legend()
+
+# Exibir o gráfico
+plt.show()
