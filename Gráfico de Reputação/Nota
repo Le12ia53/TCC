@@ -1,0 +1,24 @@
+import matplotlib.pyplot as plt
+
+# Dados das notas
+instituicoes = ['USP Esalq', 'Puc PR', 'PUC Minas', 'USP ICM']
+notas = [7.7, 7.3, 6.6, 0.0]
+cores = ['green', 'red', 'blue', 'gray']
+
+# Plotar o gráfico de barras
+plt.figure(figsize=(10, 6))
+bars = plt.bar(instituicoes, notas, color=cores)
+
+# Adicionar labels acima das barras
+for bar, nota in zip(bars, notas):
+    yval = bar.get_height()
+    plt.text(bar.get_x() + bar.get_width()/2.0, yval + 0.2, f'{nota}', ha='center', va='bottom')
+
+# Adicionar título e labels
+plt.title('Reputação/Nota')
+plt.xlabel('Instituição')
+plt.ylabel('Nota')
+plt.ylim(0, 10)
+
+# Exibir o gráfico
+plt.show()
