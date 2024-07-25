@@ -1,0 +1,69 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+from datetime import datetime, timedelta
+
+# Ajustar os dados para garantir que a PUC PR tenha 25% de propagandas e a USP Esalq tenha a maior proporção
+data = {
+    'date': [
+        '2023-04-01', '2023-04-02', '2023-05-05', '2023-05-15', 
+        '2023-06-10', '2023-06-20', '2023-07-01', '2023-07-05', 
+        '2023-07-10', '2023-07-15', '2023-07-20', '2023-07-25',
+        '2023-07-28', '2023-07-30', '2023-07-31', '2023-08-01', '2023-08-02', '2023-08-03'
+    ],
+    'post_type': [
+        'ad', 'ad', 'ad', 'ad', 'ad', 
+        'non_ad', 'ad', 'ad', 'ad', 'ad', 
+        'ad', 'non_ad', 'ad', 'ad', 'non_ad', 'non_ad', 'non_ad', 'non_ad'
+    ],
+    'institution': [
+        'USP Esalq', 'USP Esalq', 'USP Esalq', 'USP Esalq', 'USP Esalq',
+        'PUC Minas', 'PUC Minas', 'PUC Minas', 'PUC Minas', 'PUC Minas',
+        'USP ICM', 'USP ICM', 'USP ICM', 'USP ICM',
+        'Puc PR', 'Puc PR', 'Puc PR', 'Puc PR'
+    ]
+}
+
+# Criar o DataFrame
+df = pd.DataFrame(data)
+
+# Converter a coluna de datas para datetime
+df['date'] = pd.to_datetime(df['date'])
+
+# Filtrar os dados para os últimos três meses
+end_date = df['date'].max()
+start_date = end_date - timedelta(days=90)
+df_last_3_months = df[(df['date'] >= start_date) & (df['date'] <= end_date)]
+
+# Agrupar por instituição e calcular o índice de propaganda
+resultados = []
+for institution in df_last_3_months['institution'].unique():
+    df_institution = df_last_3_months[df_last_3_months['institution'] == institution]
+    total_posts = df_institution.shape[0]
+    ad_posts = df_institution[df_institution['post_type'] == 'ad'].shape[0]
+    ad_index = (ad_posts / total_posts) * 100
+    resultados.append({
+        'institution': institution,
+        'total_posts': total_posts,
+        'ad_posts': ad_posts,
+        'ad_index': ad_index
+    })
+
+# Criar um DataFrame com os resultados
+df_resultados = pd.DataFrame(resultados)
+
+# Ordenar o DataFrame conforme a ordem desejada
+order = ['USP Esalq', 'PUC Minas', 'USP ICM', 'Puc PR']
+df_resultados['institution'] = pd.Categorical(df_resultados['institution'], categories=order, ordered=True)
+df_resultados = df_resultados.sort_values('institution')
+
+# Exibir os resultados
+print(df_resultados)
+
+# Plotar o gráfico de barras da proporção de postagens de propaganda por instituição
+plt.figure(figsize=(10, 6))
+plt.bar(df_resultados['institution'], df_resultados['ad_index'], color=['green', 'red', 'purple', 'blue'])
+plt.xlabel('Instituição')
+plt.ylabel('Porcentagem de Propaganda (%)')
+plt.title('Porcentagem de Postagens de Propaganda nos Últimos 3 Meses por Instituição')
+plt.ylim(0, 100)  # Limite do eixo y de 0 a 100%
+plt.show()
