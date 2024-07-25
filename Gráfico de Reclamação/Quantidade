@@ -1,0 +1,20 @@
+# Dados das reclamações
+reclamacoes = [164, 1055, 1014, 0]
+
+# Plotar o gráfico de barras
+plt.figure(figsize=(10, 6))
+bars = plt.bar(instituicoes, reclamacoes, color=cores)
+
+# Adicionar labels acima das barras
+for bar, reclamacao in zip(bars, reclamacoes):
+    yval = bar.get_height()
+    plt.text(bar.get_x() + bar.get_width()/2.0, yval + 20, f'{reclamacao}', ha='center', va='bottom')
+
+# Adicionar título e labels
+plt.title('Reclamação/Quantidade')
+plt.xlabel('Instituição')
+plt.ylabel('Quantidade de Reclamações')
+plt.ylim(0, 1200)
+
+# Exibir o gráfico
+plt.show()
