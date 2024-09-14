@@ -1,0 +1,40 @@
+from googleapiclient.discovery import build
+import pandas as pd
+
+# API key do YouTube (você precisa gerar uma na sua conta Google Cloud)
+api_key = 'SUA_API_KEY_YOUTUBE'
+
+# Função para obter dados do canal
+def get_youtube_data(channel_id):
+    youtube = build('youtube', 'v3', developerKey=api_key)
+    
+    request = youtube.channels().list(
+        part='statistics',
+        id=channel_id
+    )
+    response = request.execute()
+    
+    return response['items'][0]['statistics']
+
+# IDs dos canais do YouTube
+youtube_channels = {
+    'USP Esalq': 'ID_CANAL_USP_ESALQ',
+    'PUC PR': 'ID_CANAL_PUC_PR',
+    'PUC Minas': 'ID_CANAL_PUC_MINAS',
+    'USP ICM': 'ID_CANAL_USP_ICM'
+}
+
+# Coletando os dados dos canais
+youtube_data = {'Instituição': [], 'Subscribers': [], 'Video Views': []}
+
+for institution, channel_id in youtube_channels.items():
+    stats = get_youtube_data(channel_id)
+    youtube_data['Instituição'].append(institution)
+    youtube_data['Subscribers'].append(stats['subscriberCount'])
+    youtube_data['Video Views'].append(stats['viewCount'])
+
+# Criando um DataFrame para YouTube
+df_youtube = pd.DataFrame(youtube_data)
+
+# Salvando em CSV
+df_youtube.to_csv('youtube_data.csv', index=False)
