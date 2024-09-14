@@ -1,0 +1,11 @@
+# Carregando os CSVs
+df_reclameaqui = pd.read_csv('reclameaqui_reviews.csv')
+df_youtube = pd.read_csv('youtube_data.csv')
+df_instagram = pd.read_csv('instagram_data.csv')
+
+# Juntando os DataFrames
+df_final = pd.merge(df_reclameaqui, df_youtube, on='Instituição', how='outer')
+df_final = pd.merge(df_final, df_instagram, on='Instituição', how='outer')
+
+# Salvando o DataFrame final
+df_final.to_csv('dados_instituicoes_ensino.csv', index=False)
