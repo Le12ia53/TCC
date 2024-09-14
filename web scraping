@@ -1,0 +1,48 @@
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
+import pandas as pd
+
+# Configurações do Selenium para evitar que o navegador seja fechado automaticamente
+chrome_options = Options()
+chrome_options.add_argument("--headless")  # Executar em segundo plano, sem abrir a janela do navegador
+chrome_options.add_argument('--no-sandbox')
+chrome_options.add_argument('--disable-dev-shm-usage')
+
+# Caminho do driver do Chrome
+service = Service(executable_path="CAMINHO_DO_SEU_CHROMEDRIVER")  # Baixe o ChromeDriver de acordo com sua versão do Chrome
+
+# Lista de URLs das instituições no Reclame Aqui
+urls = {
+    'USP Esalq': 'https://www.reclameaqui.com.br/empresa-usp-esalq/',
+    'PUC PR': 'https://www.reclameaqui.com.br/empresa-puc-pr/',
+    'PUC Minas': 'https://www.reclameaqui.com.br/empresa-puc-minas/',
+    'USP ICM': 'https://www.reclameaqui.com.br/empresa-usp-icm/'
+}
+
+# Função para coletar as avaliações/reclamações de cada URL
+def scrape_reclameaqui_selenium(url):
+    driver = webdriver.Chrome(service=service, options=chrome_options)
+    driver.get(url)
+
+    # Exemplo de como encontrar as reviews/reclamações
+    reviews = driver.find_elements(By.CLASS_NAME, 'review-text')
+    review_texts = [review.text.strip() for review in reviews]
+    
+    driver.quit()
+    return review_texts
+
+# Coletando os dados para todas as empresas
+data = {'Instituição': [], 'Reclamação': []}
+
+for institution, url in urls.items():
+    reviews = scrape_reclameaqui_selenium(url)
+    data['Instituição'].extend([institution] * len(reviews))
+    data['Reclamação'].extend(reviews)
+
+# Criando um DataFrame
+df_reclameaqui = pd.DataFrame(data)
+
+# Salvando em CSV
+df_reclameaqui.to_csv('reclameaqui_reviews.csv', index=False)
