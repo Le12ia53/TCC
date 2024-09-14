@@ -1,0 +1,33 @@
+import requests
+import pandas as pd
+
+# Token de acesso do Instagram Graph API
+access_token = 'SEU_TOKEN_DE_ACESSO_INSTAGRAM'
+
+# IDs de perfis de Instagram
+instagram_profiles = {
+    'USP Esalq': 'ID_INSTAGRAM_USP_ESALQ',
+    'PUC PR': 'ID_INSTAGRAM_PUC_PR',
+    'PUC Minas': 'ID_INSTAGRAM_PUC_MINAS',
+    'USP ICM': 'ID_INSTAGRAM_USP_ICM'
+}
+
+# Função para coletar os dados de seguidores
+def get_instagram_data(profile_id):
+    url = f'https://graph.facebook.com/v12.0/{profile_id}?fields=followers_count&access_token={access_token}'
+    response = requests.get(url)
+    return response.json()
+
+# Coletando os dados dos perfis
+instagram_data = {'Instituição': [], 'Followers': []}
+
+for institution, profile_id in instagram_profiles.items():
+    stats = get_instagram_data(profile_id)
+    instagram_data['Instituição'].append(institution)
+    instagram_data['Followers'].append(stats['followers_count'])
+
+# Criando um DataFrame para Instagram
+df_instagram = pd.DataFrame(instagram_data)
+
+# Salvando em CSV
+df_instagram.to_csv('instagram_data.csv', index=False)
