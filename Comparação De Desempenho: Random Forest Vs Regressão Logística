@@ -10,24 +10,26 @@ logistic_regression = [0.82, 0.80, 0.81]  # Valores para Regressão Logística
 x = np.arange(len(labels))  # A localização das barras
 width = 0.35  # Largura das barras
 
+# Criando o gráfico
 fig, ax = plt.subplots()
-bars_rf = ax.bar(x - width/2, random_forest, width, label='Random Forest', color='#003366')
-bars_lr = ax.bar(x + width/2, logistic_regression, width, label='Logistic Regression', color='#2EC4B6')
+bars_rf = ax.bar(x - width/2, random_forest, width, label='Random Forest', color='#003366')  # Azul escuro
+bars_lr = ax.bar(x + width/2, logistic_regression, width, label='Logistic Regression', color='#2EC4B6')  # Verde marine
 
 # Adicionando detalhes
 ax.set_ylabel('Scores')
-ax.set_title('Comparação de Desempenho: Random Forest vs Regressão Logística')
 ax.set_xticks(x)
 ax.set_xticklabels(labels)
-ax.legend()
 
-# Função para adicionar os valores no topo de cada barra
+# Movendo a legenda para o lado direito
+ax.legend(loc='upper left', bbox_to_anchor=(1, 1))
+
+# Função para adicionar os valores no topo de cada barra, ajustando para não sobrepor
 def autolabel(bars):
     for bar in bars:
         height = bar.get_height()
         ax.annotate(f'{height:.2f}',
                     xy=(bar.get_x() + bar.get_width() / 2, height),
-                    xytext=(0, 3),  # 3 points vertical offset
+                    xytext=(0, 6),  # Ajuste maior no deslocamento para evitar sobreposição
                     textcoords="offset points",
                     ha='center', va='bottom')
 
@@ -36,6 +38,9 @@ autolabel(bars_rf)
 autolabel(bars_lr)
 
 fig.tight_layout()
+
+# Movendo o título para baixo
+plt.suptitle('Comparação de Desempenho: Random Forest vs Regressão Logística', y=-0.05)
 
 # Mostrar o gráfico
 plt.show()
